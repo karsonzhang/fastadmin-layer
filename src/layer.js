@@ -1,6 +1,6 @@
 /**
 
- @Name：layer v3.1.1 Web弹层组件
+ @Name：layer v3.1.4 Web弹层组件
  @Author：贤心
  @Site：http://layer.layui.com
  @License：MIT
@@ -210,6 +210,7 @@ Class.pt.config = {
   maxWidth: 360,
   anim: 0,
   isOutAnim: true,
+  focusBtn: 0,
   icon: -1,
   moveType: 1,
   resize: true,
@@ -247,7 +248,7 @@ Class.pt.vessel = function(conType, callback){
         var button = '';
         typeof config.btn === 'string' && (config.btn = [config.btn]);
         for(var i = 0, len = config.btn.length; i < len; i++){
-          button += '<a class="'+ doms[6] +''+ i +'">'+ config.btn[i] +'</a>'
+          button += '<a class="'+ doms[6] +''+ i +'" href="javascript:;">'+ config.btn[i] +'</a>'
         }
         return '<div class="'+ doms[6] +' layui-layer-btn-'+ (config.btnAlign||'') +'">'+ button +'</div>'
       }() : '')
@@ -651,7 +652,28 @@ Class.pt.callback = function(){
       close === false || layer.close(that.index);
     }
   });
-  
+
+  //按钮焦点
+  if (typeof config.focusBtn === 'number') {
+    var focusBtn = layero.find('.' + doms[6]).children('a').eq(config.focusBtn);
+    if (focusBtn.size() > 0) {
+      var position = focusBtn.position();
+      var style = {
+        width: focusBtn.outerWidth(), height: focusBtn.outerHeight(), left: position.left, top: position.top,
+        marginTop: focusBtn.css("marginTop"),
+        marginLeft: focusBtn.css("marginLeft"),
+      };
+      var confirmBtn = $("<button class='layui-layer-confirm'></button>").css(style);
+      layero.find('.' + doms[6]).after(confirmBtn);
+      confirmBtn.focus().click(function () {
+        focusBtn.trigger("click");
+        return false;
+      }).on("focus blur", function (e) {
+        focusBtn.toggleClass("focus", e.type === "focus");
+      });
+    }
+  }
+
   //取消
   function cancel(){
     var close = config.cancel && config.cancel(that.index, layero);
