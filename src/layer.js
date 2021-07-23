@@ -207,7 +207,7 @@ var Class = function(setings){
     that.creat();
   };
   that.index = ++layer.index;
-  that.config.maxWidth = $(win).width() - 15*2; //初始最大宽度：当前屏幕宽，左右留 15px 边距
+  // that.config.maxWidth = $(win).width() - 15*2; //初始最大宽度：当前屏幕宽，左右留 15px 边距
   that.config = $.extend({}, that.config, ready.config, setings);
   document.body ? creat() : setTimeout(function(){
     creat();
