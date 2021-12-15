@@ -93,7 +93,7 @@ var isLayui = window.layui && layui.define, $, win, ready = {
 
 //默认内置方法。
 var layer = {
-  v: '3.5.1',
+  v: '3.5.2',
   ie: function(){ //ie版本
     var agent = navigator.userAgent.toLowerCase();
     return (!!window.ActiveXObject || "ActiveXObject" in window) ? (
@@ -697,40 +697,27 @@ Class.pt.callback = function(){
     }
   });
 
-    //按钮焦点
-    if (typeof config.focusBtn === 'number') {
-      var focusBtn = layero.find('.' + doms[6]).children('a').eq(config.focusBtn);
-      if (focusBtn.size() > 0) {
-        layero.find('.' + doms[6]).css("position", "relative");
-        var position = focusBtn.position();
-        var style = {
-          width: focusBtn.outerWidth(), height: focusBtn.outerHeight(), left: position.left, top: position.top,
-          marginTop: focusBtn.css("marginTop"),
-          marginLeft: focusBtn.css("marginLeft"),
-        };
-        var confirmBtn = $("<button class='layui-layer-confirm'></button>").css(style);
-        if(config.resize){
-          var _resizing = config.resizing;
-          config.resizing = function(layero){
-            _resizing && _resizing(layero);
-            var current = focusBtn.position();
-            confirmBtn.size()>0 && confirmBtn.css({left: current.left, top: current.top});
-          };
-        }
-        layero.find('.' + doms[6]).append(confirmBtn);
-        confirmBtn.focus().click(function () {
-          focusBtn.trigger("click");
-          return false;
-        }).on("focus blur", function (e) {
-          focusBtn.toggleClass("focus", e.type === "focus");
-          e.type === 'blur' && confirmBtn.remove();
-        });
+  //按钮焦点
+  if (typeof config.focusBtn === 'number') {
+      layero.find('.' + doms[6]).children('a').each(function () {
+          var currentBtn = $(this);
+          var confirmBtn = $("<button type='button' />").addClass("layui-layer-confirm");
+          currentBtn.css("position", "relative").attr("tabindex", -1).append(confirmBtn);
+          confirmBtn.click(function () {
+              currentBtn.trigger("click");
+              return false;
+          })
+      });
+      var focusBtn = layero.find('.' + doms[6]).find('button.layui-layer-confirm').eq(config.focusBtn);
+      if (focusBtn.length > 0) {
+          focusBtn.focus();
       }
-    }
+  }
+
   //取消
-  function cancel(){
-    var close = config.cancel && config.cancel(that.index, layero);
-    close === false || layer.close(that.index);
+  function cancel() {
+      var close = config.cancel && config.cancel(that.index, layero);
+      close === false || layer.close(that.index);
   }
 
   //右上角关闭回调
@@ -889,10 +876,11 @@ layer.style = function(index, options, limit){
       height: parseFloat(options.height) - titHeight - btnHeight
     });
   } else {
+    var isBorderBox = contElem.css("box-sizing") == 'border-box' ? true : false;
     contElem.css({
       height: parseFloat(options.height) - titHeight - btnHeight
-      - parseFloat(contElem.css('padding-top'))
-      - parseFloat(contElem.css('padding-bottom'))
+      - parseFloat(isBorderBox ? 0 : contElem.css('padding-top'))
+      - parseFloat(isBorderBox ? 0 : contElem.css('padding-bottom'))
     })
   }
 };
