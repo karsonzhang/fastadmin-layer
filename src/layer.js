@@ -1154,6 +1154,7 @@ layer.photos = function(options, loop, key){
   var dict = {};
   options = options || {};
   if(!options.photos) return;
+  options.zoom = typeof options.zoom === 'undefined' ? true : !!options.zoom;
 
   //若 photos 并非选择器或 jQuery 对象，则为普通 object
   var isObject = !(typeof options.photos === 'string' || options.photos instanceof $)
@@ -1273,6 +1274,25 @@ layer.photos = function(options, loop, key){
     });
 
     $(document).on('keyup', dict.keyup);
+
+    //鼠标滚轮缩放图片
+    if(options.zoom){
+      dict.bigimg.on('wheel mousewheel', $(">img", dict.bigimg), function(event) {
+        var offset = $(this).offset(),
+            zoomIn = event.originalEvent.wheelDelta>0,
+            operator = zoomIn ? '+=' : '-=',
+            distance = 24,
+            value = Math.floor(distance / 2) ;
+        if(!zoomIn && ($(this).width()<50 || $(this).height()<50)){
+          return false;
+        }
+        $(this).width(operator + distance).height(operator + distance).offset({
+          'left':  zoomIn ? offset.left - value : offset.left + value,
+          'top':  zoomIn ? offset.top - value : offset.top + value
+        });
+        return false;
+      });
+    }
   };
 
   //图片预加载

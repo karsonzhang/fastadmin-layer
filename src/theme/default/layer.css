@@ -7,6 +7,8 @@
 /* *html{background-image: url(about:blank); background-attachment: fixed;} */
 html #layuicss-layer{display: none; position: absolute; width: 1989px;}
 
+html[layer-full]{height:inherit}
+
 /* common */
 .layui-layer-shade, .layui-layer{position:fixed; _position:absolute; pointer-events: auto;}
 .layui-layer-shade{top:0; left:0; width:100%; height:100%; _height:expression(document.body.offsetHeight+"px");}
@@ -146,7 +148,7 @@ html #layuicss-layer{display: none; position: absolute; width: 1989px;}
 
 /* photo模式 */
 .layui-layer-photos{background: none; box-shadow: none;}
-.layui-layer-photos .layui-layer-content{overflow:hidden; text-align: center;}
+.layui-layer-photos .layui-layer-content{overflow:visible; text-align: center;}
 .layui-layer-photos .layui-layer-phimg img{position: relative; width:100%; display: inline-block; *display:inline; *zoom:1; vertical-align:top;}
 .layui-layer-imgprev, .layui-layer-imgnext{position: fixed; top: 50%; width: 27px; _width: 44px; height: 44px;  margin-top:-22px; outline:none;blr:expression(this.onFocus=this.blur());}
 .layui-layer-imgprev{left: 30px; background-position:-5px -5px; _background-position:-70px -5px;}
